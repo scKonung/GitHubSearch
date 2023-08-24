@@ -29,7 +29,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
         return Arrays.stream(response.getBody())
                 .filter(repository -> !repository.isFork())
-                .map(repository -> new RepositoryDto(repository.getName()))
+                .map(repository -> new RepositoryDto(repository.getName() , repository.getOwner().getLogin()))
                 .collect(Collectors.toList());
     }
 }

@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Repository {
-    private String name;
-    private boolean fork;
-    private Owner owner;
-
+public class Owner {
+    private String login;
 }
