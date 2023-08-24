@@ -3,6 +3,6 @@ package com.chalyi.GitHubSearch.models;
 import lombok.Data;
 
 @Data
-public class Owner {
-    private String login;
+public class Commit {
+    private String sha;
 }

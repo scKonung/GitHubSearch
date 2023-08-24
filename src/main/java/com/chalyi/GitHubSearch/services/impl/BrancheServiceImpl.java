@@ -1,9 +1,10 @@
 package com.chalyi.GitHubSearch.services.impl;
 
+import com.chalyi.GitHubSearch.dto.BrancheDto;
 import com.chalyi.GitHubSearch.dto.RepositoryDto;
+import com.chalyi.GitHubSearch.models.Branche;
 import com.chalyi.GitHubSearch.models.Repository;
 import com.chalyi.GitHubSearch.services.BrancheService;
-import com.chalyi.GitHubSearch.services.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -15,29 +16,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class RepositoryServiceImpl implements RepositoryService {
+public class BrancheServiceImpl implements BrancheService {
     private final RestTemplate restTemplate;
-    private final BrancheService brancheService;
     private final String apiBaseUrl = "https://api.github.com";
 
     @Autowired
-    public RepositoryServiceImpl(RestTemplate restTemplate, BrancheService brancheService) {
+    public BrancheServiceImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.brancheService = brancheService;
     }
 
-    public List<RepositoryDto> getAllByUsername(String username) {
-        ResponseEntity<Repository[]> response = restTemplate.exchange(
-                apiBaseUrl + "/users/" + username + "/repos",
+    @Override
+    public List<BrancheDto> getAllBranches(String username, String repositoryName) {
+        ResponseEntity<Branche[]> response = restTemplate.exchange(
+                apiBaseUrl + "/repos/" + username + "/" + repositoryName + "/branches",
                 HttpMethod.GET,
                 null,
-                Repository[].class);
+                Branche[].class);
 
         return Arrays.stream(response.getBody())
-                .filter(repository -> !repository.isFork())
-                .map(repository -> new RepositoryDto(
-                        repository.getName() ,
-                        repository.getOwner().getLogin(), brancheService.getAllBranches(username, repository.getName())))
+                .map(branche -> new BrancheDto(branche.getName(), branche.getCommit().getSha()))
                 .collect(Collectors.toList());
     }
 }
