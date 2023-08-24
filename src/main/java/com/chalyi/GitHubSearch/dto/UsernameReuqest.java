@@ -1,14 +1,15 @@
-package com.chalyi.GitHubSearch.models;
+package com.chalyi.GitHubSearch.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Repository {
-    private String name;
-    private boolean fork;
+@Getter
+public class UsernameReuqest {
+    private  String username;
 
 }

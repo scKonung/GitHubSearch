@@ -1,4 +1,4 @@
-package com.chalyi.GitHubSearch.models;
+package com.chalyi.GitHubSearch.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Repository {
+public class RepositoryDto {
     private String name;
-    private boolean fork;
-
 }
