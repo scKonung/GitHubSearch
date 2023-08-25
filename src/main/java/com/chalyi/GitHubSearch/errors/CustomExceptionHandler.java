@@ -12,12 +12,12 @@ public class CustomExceptionHandler {
     public ResponseEntity<ErrorObject> handleXmlApplication(UnsupportedAcceptXmlException exception){
         return  ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorObject(exception.getHttpStatus(), exception.getMessage()));
+                .body(new ErrorObject(exception.getHttpStatus().value(), exception.getMessage()));
     }
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorObject> handleUserNotFoundException(UserNotFoundException exception){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorObject(exception.getHttpStatus(), exception.getMessage()));
+                .body(new ErrorObject(exception.getHttpStatus().value(), exception.getMessage()));
     }
 }
