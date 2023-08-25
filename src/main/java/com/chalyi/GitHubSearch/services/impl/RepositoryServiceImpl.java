@@ -1,13 +1,14 @@
 package com.chalyi.GitHubSearch.services.impl;
 
 import com.chalyi.GitHubSearch.dto.RepositoryDto;
+import com.chalyi.GitHubSearch.errors.UserNotFoundException;
 import com.chalyi.GitHubSearch.models.Repository;
 import com.chalyi.GitHubSearch.services.BrancheService;
 import com.chalyi.GitHubSearch.services.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -27,17 +28,26 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     public List<RepositoryDto> getAllByUsername(String username) {
-        ResponseEntity<Repository[]> response = restTemplate.exchange(
-                apiBaseUrl + "/users/" + username + "/repos",
-                HttpMethod.GET,
-                null,
-                Repository[].class);
 
-        return Arrays.stream(response.getBody())
+        return Arrays.stream(findUserRepositories(username))
                 .filter(repository -> !repository.isFork())
                 .map(repository -> new RepositoryDto(
                         repository.getName() ,
                         repository.getOwner().getLogin(), brancheService.getAllBranches(username, repository.getName())))
                 .collect(Collectors.toList());
+    }
+
+    private Repository[] findUserRepositories(String username){
+        try {
+            ResponseEntity<Repository[]> response = restTemplate.exchange(
+                    apiBaseUrl + "/users/" + username + "/repos",
+                    HttpMethod.GET,
+                    null,
+                    Repository[].class);
+
+            return response.getBody();
+        } catch (HttpClientErrorException.NotFound notFoundException) {
+            throw new UserNotFoundException(username);
+        }
     }
 }

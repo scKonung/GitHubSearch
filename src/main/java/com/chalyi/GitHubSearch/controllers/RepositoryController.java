@@ -2,14 +2,12 @@ package com.chalyi.GitHubSearch.controllers;
 
 import com.chalyi.GitHubSearch.dto.RepositoryDto;
 import com.chalyi.GitHubSearch.dto.UsernameReuqest;
-import com.chalyi.GitHubSearch.models.Repository;
+import com.chalyi.GitHubSearch.errors.UnsupportedAcceptXmlException;
 import com.chalyi.GitHubSearch.services.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class RepositoryController {
@@ -22,7 +20,11 @@ public class RepositoryController {
 
     // GET request to fetch repositories for a user
     @GetMapping("/get")
-    public ResponseEntity<List<RepositoryDto>> getUserRepositories(@RequestBody UsernameReuqest username) {
+    public ResponseEntity<List<RepositoryDto>> getUserRepositories(@RequestBody UsernameReuqest username,
+                                                                   @RequestHeader(value = "Accept") String acceptHeader) {
+        System.out.println(acceptHeader);
+        if(acceptHeader.equals("application/xml"))
+            throw new UnsupportedAcceptXmlException();
         List<RepositoryDto> repositories = repositoryService.getAllByUsername(username.getUsername());
         return ResponseEntity.ok(repositories);
     }
