@@ -1,6 +1,6 @@
 # GitHub Repositories Search By Username
 
-### 👨‍💻: Description
+### 👨‍💻 Description
 To use the application, you need to provide the GitHub username as a command-line argument. The application will then retrieve the user's repositories that are not forks and display their details in format:
 ```json
 {
