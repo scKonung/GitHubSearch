@@ -40,7 +40,7 @@ When user give username, which is not exict, application return:
     "message": "User with username:${username} not found in GitHub"
   }
   ```
-- If the `Accept` header is set to `application/xml`, a `404` response is returned with a message.
+- If the `Accept` header is set to `application/xml`, a `406` response is returned with a message.
    ```json
     {
   "status": 406,
