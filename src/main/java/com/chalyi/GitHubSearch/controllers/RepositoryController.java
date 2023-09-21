@@ -19,7 +19,7 @@ public class RepositoryController {
     }
 
     // GET request to fetch repositories for a user
-    @GetMapping("/get")
+    @GetMapping("/")
     public ResponseEntity<List<RepositoryDto>> getUserRepositories(@RequestBody UsernameReuqest username,
                                                                    @RequestHeader(value = "Accept") String acceptHeader) {
         System.out.println(acceptHeader);

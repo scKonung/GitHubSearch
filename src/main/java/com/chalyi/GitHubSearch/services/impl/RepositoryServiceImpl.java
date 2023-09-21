@@ -1,5 +1,6 @@
 package com.chalyi.GitHubSearch.services.impl;
 
+import com.chalyi.GitHubSearch.dto.BrancheDto;
 import com.chalyi.GitHubSearch.dto.RepositoryDto;
 import com.chalyi.GitHubSearch.errors.UserNotFoundException;
 import com.chalyi.GitHubSearch.models.Repository;
@@ -10,6 +11,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,13 +21,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class RepositoryServiceImpl implements RepositoryService {
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
     private final BrancheService brancheService;
-    private final String apiBaseUrl = "https://api.github.com";
 
     @Autowired
-    public RepositoryServiceImpl(RestTemplate restTemplate, BrancheService brancheService) {
-        this.restTemplate = restTemplate;
+    public RepositoryServiceImpl(WebClient webClient, BrancheService brancheService) {
+        this.webClient = webClient;
         this.brancheService = brancheService;
     }
 
@@ -39,14 +42,13 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     private Repository[] findUserRepositories(String username){
         try {
-            ResponseEntity<Repository[]> response = restTemplate.exchange(
-                    apiBaseUrl + "/users/" + username + "/repos",
-                    HttpMethod.GET,
-                    null,
-                    Repository[].class);
-
-            return response.getBody();
-        } catch (HttpClientErrorException.NotFound notFoundException) {
+            return webClient
+                    .get()
+                    .uri("/users/{username}/repos", username)
+                    .retrieve()
+                    .bodyToMono(Repository[].class)
+                    .block(); // Block to get the result
+        } catch (WebClientResponseException.NotFound notFoundException) {
             throw new UserNotFoundException(username);
         }
     }
