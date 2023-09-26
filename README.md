@@ -17,9 +17,6 @@ To use the application, you need to provide the GitHub username as a command-lin
 
 ```
 
-### 💫 API Endpoint
-- GET `/get`
-
 ### 💬: Response Format
 - Header: “Accept: `application/json`”
 - Body:
